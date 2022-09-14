@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import re
+import numpy as np
 
 
 def _find_date_from_string(str_):
@@ -38,9 +39,11 @@ class SWJTUCalendar:
         self._dates = [i for i in range(7)]
         # [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
 
+        self._classes = np.random.randn(7, 13).astype('<U2000')
+
         self._read_file(filepath)
         self._get_dates()
-
+        self._sort_classes()
     def _read_file(self, file):
         with open(file, mode="r", encoding="utf-8-sig") as f:
             data = bs(f, features="html5lib")
@@ -61,28 +64,26 @@ class SWJTUCalendar:
             month, day = _find_date_from_string(self._titles[i])
             self._dates[i] = [month, day]
 
-    class _GetClasses:
-        def __init__(self, trs, section):
-            self.trs = trs
-            # Get required row and columns
-            self.tds = self.trs[section].find_all("td")
-            self.classes = []
-            self._sort_classes()
-
-        def _sort_classes(self):
-            """
-            Get classes from content.
-            :return:
-            """
+    def _sort_classes(self):
+        """
+        Get classes from content.
+        :return:
+        """
+        for section in range(1, 14, 1):
+            tds = self._trs[section].find_all("td")
             data = [i for i in range(9)]
             # Judge if there is a class.
-            for i, each in enumerate(self.tds):
+            for i, each in enumerate(tds):
                 text = each.text
                 if text != ' ':
                     data[i] = text
                 else:
                     data[i] = None
-            # TODO: Finish this part.
+            # store in self._classes
+            for i, each in enumerate(data):
+                if i<=1:
+                    pass
+                self._classes[i-2][section-1] = each
 
     def calendar(self):
         return self._file
