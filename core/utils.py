@@ -1,10 +1,17 @@
 from bs4 import BeautifulSoup as bs
 import re
-import numpy as np
 from datetime import datetime
 
 import core.ics as ics
 
+
+def _create_2D_list():
+    tis = []
+    for i in range(7):
+        tis.append([])
+        for j in range(13):
+            tis[i].append("")
+    return tis
 
 def _find_date_from_string(str_):
     str_ = str(str_)
@@ -83,7 +90,7 @@ class SWJTUCalendar:
         ]
         self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
 
-        self._classes = np.random.randn(7, 13).astype('<U2000')
+        self._classes = _create_2D_list()
         self._classes_found = []
         """
         Elements in self._classes_found should be:
@@ -145,7 +152,7 @@ class SWJTUCalendar:
 
         for i, each in enumerate(self._classes):
             for j, class_ in enumerate(each):
-                if class_ != "None":
+                if class_ is not None:
                     info = _get_class_info_from_str(class_)
                     start_time = self.start_end_times[j][0]
                     end_time = self.start_end_times[j][1]
@@ -177,8 +184,8 @@ class SWJTUCalendar:
                 each[1], year, each[-3], each[-2], each[-1], each[2]
             ])
 
-    def save_calendar(self) -> None:
+    def save_calendar(self, dir_) -> None:
         self.ics.generate_data_dict()
-        self.ics.save_file()
+        self.ics.save_file(path=dir_)
 
 
