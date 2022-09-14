@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import time
 import uuid
@@ -21,16 +22,22 @@ class Ics:
 
         def load_dict(input_):
             for each in input_:
-                if str(each).startswith("task_identify"):
+                VTASK = re.search(r"task_identify\d*", str(each))
+                if VTASK:
+                    founded = True
+                else:
+                    founded = False
+
+                if founded:
                     load_dict(input_[each])
-                    pass
+                    continue
 
                 if type(input_[each]) == dict:
                     data_list.append("BEGIN:" + each + "\n")
                     load_dict(input_[each])
                     data_list.append("END:" + each + "\n")
                 else:
-                    data_list.append(each + ":" + str(input_[each]) + "\n")
+                    data_list.append(each + ":" + input_[each] + "\n")
 
         load_dict(self.ics)
         self.data_list = data_list
@@ -66,7 +73,7 @@ class Ics:
         task["VEVENT"]["DTSTART;TZID=Asia/Shanghai"] = time_start
         task["VEVENT"]['SUMMARY'] = info[0]
         task["VEVENT"]['LOCATION'] = info[5]
-        task["VEVENT"]["SEQUENCE"] = self.num_events + 1
+        task["VEVENT"]["SEQUENCE"] = str(self.num_events + 1)
 
         add = {"task_identify" + str(self.num_events + 1): task}
 
