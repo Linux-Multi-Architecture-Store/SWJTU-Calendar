@@ -177,8 +177,8 @@ class SWJTUCalendar:
                 each[1], year, each[-3], each[-2], each[-1], each[2]
             ])
 
-    def save_calendar(self) -> None:
+    def save_calendar(self, dir_) -> None:
         self.ics.generate_data_dict()
-        self.ics.save_file()
+        self.ics.save_file(path=dir_)
 
 
