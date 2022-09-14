@@ -1,7 +1,10 @@
-import core.utils as utils
 import sys
+import tkinter as tk
+from gui.app import MainApp
+
 sys.setrecursionlimit(2147483647)
 
-x = utils.SWJTUCalendar("/Users/ghayinanoghaqino/Downloads/5.html")
-x.save_calendar()
-
+root = tk.Tk()
+root.title("SWJTU课表导出日历小工具")
+app = MainApp(root)
+root.mainloop()
