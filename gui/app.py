@@ -6,6 +6,7 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import core
+import utils
 
 class App(tk.Frame):
     """
@@ -125,8 +126,11 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         self.log.insert(tk.INSERT, "[ info ] Start to process! \n")
 
         def all_in_one():
-            calendar = core.SWJTUCalendar(self.html_path.get())
-            calendar.save_calendar(self.save_path.get())
+            html_path = utils.save_all_table_html()
+            for i in range(1,26,1):
+                file = os.path.join(html_path, str(i) + ".html")
+                calendar = core.SWJTUCalendar(file)
+                calendar.save_calendar(self.save_path.get(), name=str(i))
             path = str(os.path.join(self.save_path.get(), ""))
             self.log.insert(tk.INSERT, f"""[ info ] Success! Stored in: \n {path}""" )
 
