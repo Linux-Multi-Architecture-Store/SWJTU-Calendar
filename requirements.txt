@@ -1,1 +1,4 @@
 beautifulsoup4==4.11.1
+ddddocr~=1.4.3
+pyppeteer
+html5lib==1.1
