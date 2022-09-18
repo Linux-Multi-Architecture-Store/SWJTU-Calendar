@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup as bs
 import re
 import os
 from datetime import datetime
-
 import core.ics as ics
 
 
@@ -13,6 +12,7 @@ def _create_2D_list():
         for j in range(13):
             tis[i].append("")
     return tis
+
 
 def _find_date_from_string(str_):
     str_ = str(str_)
@@ -71,10 +71,6 @@ class SWJTUCalendar:
         :type filepath: str
         """
         print("[ info ] Process: ", filepath)
-        self._file = None
-        self._trs = None
-        self._titles = []
-
         self.start_end_times = [
             ["0800", "0845"],
             ["0850", "0935"],
@@ -90,26 +86,34 @@ class SWJTUCalendar:
             ["2020", "2105"],
             ["2110", "2155"]
         ]
-        self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
-
-        self._classes = _create_2D_list()
-        self._classes_found = []
         """
         Elements in self._classes_found should be:
         [ index_number, name, place, start_time, stop_time , day]
         All the item should be str.
         """
 
-        self.ics = ics.Ics()
+        # self.ics = ics.Ics()
+        self.ics = {}  # Here, we use a dict to contain all icses!
+        self.classes = {}
+        self.classes_name = {}
+        # The name of the dict will be class index, AND item will be
+        # the classes found.
 
-        self._read_file(filepath)
-        self._get_dates()
-        self._sort_classes()
-        self._read_and_integrate_class_info()
-        self._add_class_to_calendar()
-        print()
+        for each in range(1, 26, 1):
+            self._file = None
+            self._trs = None
+            self._titles = []
+            self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
+            self._classes = _create_2D_list()
 
-    def _read_file(self, file):
+            self._read_file(filepath, each)
+            self._get_dates()
+            self._sort_classes()
+            self._read_and_integrate_class_info()
+        self._create_icses_from_classes()
+
+    def _read_file(self, file, index):
+        file = os.path.join(file, str(index) + ".html")
         with open(file, mode="r", encoding="utf-8-sig") as f:
             data = bs(f, features="html5lib")
             table = data.find("table", class_="table_border")
@@ -165,9 +169,20 @@ class SWJTUCalendar:
                     info[-2] = end_time + "00"
                     info[-1] = day
 
+                    # Judge if current class is register in self.classes
+                    _is_registered = False
+                    for each in self.classes:
+                        if each == info[0]:
+                            _is_registered = True
+                    if not _is_registered:
+                        _new_class = {info[0]: []}
+                        self.classes.update(_new_class)
+                        _new_name = {info[0]: info[1]}
+                        self.classes_name.update(_new_name)
+
                     # Judge if class is added.
                     added = False
-                    for each in self._classes_found:
+                    for each in self.classes[info[0]]:
                         if each[0] == info[0]:
                             if each[-1] == info[-1]:  # if same day, extend.
                                 added = True
@@ -177,19 +192,28 @@ class SWJTUCalendar:
                                     each[-2] = info[-2]
 
                     if not added:
-                        self._classes_found.append(info)
+                        self.classes[info[0]].append(info)
 
-    def _add_class_to_calendar(self):
+    def _add_class_to_calendar(self, name, classes):
         year = str(datetime.now().year)
-        for each in self._classes_found:
-            self.ics.create_task([
+        for each in classes:
+            self.ics[name].create_task([
                 each[1], year, each[-3], each[-2], each[-1], each[2]
             ])
 
-    def save_calendar(self, dir_, name) -> None:
-        self.ics.generate_data_dict()
+    def save_calendar(self, dir_) -> None:
         dir_ = os.path.join(dir_, "calendar")
         os.makedirs(dir_, exist_ok=True)
-        self.ics.save_file(path=dir_, name=name)
+        for each in self.ics:
+            self.ics[each].generate_data_dict()
+            self.ics[each].save_file(path=dir_, name=each)
 
+    def _create_icses_from_classes(self):
+        for each in self.classes:
+            _ics = ics.Ics()
+            _ics.change_name(self.classes_name[each])
+            _new_dict = {each: _ics}
+            self.ics.update(_new_dict)
 
+        for each in self.classes:
+            self._add_class_to_calendar(each, self.classes[each])

@@ -11,7 +11,7 @@ async def main():
         'handleSIGINT': False,
         'handleSIGTERM': False,
         'handleSIGHUP': False,
-        'headless': True,
+        'headless': False,
         "devtools": False,
         "args": [
             '--window-size=1280,720'
@@ -25,8 +25,8 @@ async def main():
     await captcha.screenshot({'path': '/tmp/captcha.png'})  # 注意这里用的是ele.screenshot方法与教程1 page.screenshot是不同的
     captcha_text = captcha_ocr("/tmp/captcha.png")
 
-    await page.type("#username", "学号")
-    await page.type("#password", "密码")
+    await page.type("#username", "2021110181")
+    await page.type("#password", "Ganyz123456")
     await page.type("#ranstring", str(captcha_text))
     await page.click("#submit2")
 

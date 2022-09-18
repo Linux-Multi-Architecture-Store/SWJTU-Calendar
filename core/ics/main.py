@@ -17,6 +17,9 @@ class Ics:
             json_ = f.read()
             self.ics = json.loads(json_)
 
+    def change_name(self, name):
+        self.ics['VCALENDAR']['X-WR-CALNAME'] = name
+
     def generate_data_dict(self):
         data_list = []
 
