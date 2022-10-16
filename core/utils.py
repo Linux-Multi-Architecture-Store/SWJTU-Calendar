@@ -185,11 +185,12 @@ class SWJTUCalendar:
                     for each in self.classes[info[0]]:
                         if each[0] == info[0]:
                             if each[-1] == info[-1]:  # if same day, extend.
-                                added = True
-                                if info[-3] < each[-3]:
-                                    each[-3] = info[-3]
-                                if info[-2] > each[-2]:
-                                    each[-2] = info[-2]
+                                if each[2] == info[2]:  # if is the same classroom, extend.
+                                    added = True
+                                    if info[-3] < each[-3]:
+                                        each[-3] = info[-3]
+                                    if info[-2] > each[-2]:
+                                        each[-2] = info[-2]
 
                     if not added:
                         self.classes[info[0]].append(info)
