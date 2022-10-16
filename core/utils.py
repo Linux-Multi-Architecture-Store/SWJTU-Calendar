@@ -65,7 +65,7 @@ def _get_class_info_from_str(string):
 
 
 class SWJTUCalendar:
-    def __init__(self, filepath):
+    def __init__(self, filepath, week):
         """
         :param filepath: Path to html calendar file.
         :type filepath: str
@@ -99,17 +99,16 @@ class SWJTUCalendar:
         # The name of the dict will be class index, AND item will be
         # the classes found.
 
-        for each in range(1, 26, 1):
-            self._file = None
-            self._trs = None
-            self._titles = []
-            self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
-            self._classes = _create_2D_list()
+        self._file = None
+        self._trs = None
+        self._titles = []
+        self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
+        self._classes = _create_2D_list()
 
-            self._read_file(filepath, each)
-            self._get_dates()
-            self._sort_classes()
-            self._read_and_integrate_class_info()
+        self._read_file(filepath, week)
+        self._get_dates()
+        self._sort_classes()
+        self._read_and_integrate_class_info()
         self._create_icses_from_classes()
 
     def _read_file(self, file, index):
@@ -185,11 +184,12 @@ class SWJTUCalendar:
                     for each in self.classes[info[0]]:
                         if each[0] == info[0]:
                             if each[-1] == info[-1]:  # if same day, extend.
-                                added = True
-                                if info[-3] < each[-3]:
-                                    each[-3] = info[-3]
-                                if info[-2] > each[-2]:
-                                    each[-2] = info[-2]
+                                if each[2] == info[2]:  # if is the same classroom, extend.
+                                    added = True
+                                    if info[-3] < each[-3]:
+                                        each[-3] = info[-3]
+                                    if info[-2] > each[-2]:
+                                        each[-2] = info[-2]
 
                     if not added:
                         self.classes[info[0]].append(info)
@@ -206,7 +206,7 @@ class SWJTUCalendar:
         os.makedirs(dir_, exist_ok=True)
         for each in self.ics:
             self.ics[each].generate_data_dict()
-            self.ics[each].save_file(path=dir_, name=each)
+            self.ics[each].save_file(path=dir_, name=self.classes_name[each])
 
     def _create_icses_from_classes(self):
         for each in self.classes:
