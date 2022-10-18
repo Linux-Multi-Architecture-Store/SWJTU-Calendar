@@ -39,7 +39,8 @@ def _find_date_from_string(str_):
 
 def _get_class_info_from_str(string):
     # [ index_number, name, place, start_time, stop_time , day]
-
+    #ToDo： 识别 Lab,GX 这种格式
+    #ToDo： 冲突选课解决！
     infos = string.split()
 
     """
