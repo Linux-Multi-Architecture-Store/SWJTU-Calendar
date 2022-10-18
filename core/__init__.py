@@ -1,4 +1,4 @@
-from core.utils import SWJTUCalendar
+from core.core import SWJTUCalendar
 
 __all__ = [
     "SWJTUCalendar"
