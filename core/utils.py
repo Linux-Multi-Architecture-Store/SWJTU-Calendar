@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import re
+import os
 from datetime import datetime
 
 import core.ics as ics
@@ -69,6 +70,7 @@ class SWJTUCalendar:
         :param filepath: Path to html calendar file.
         :type filepath: str
         """
+        print("[ info ] Process: ", filepath)
         self._file = None
         self._trs = None
         self._titles = []
@@ -138,7 +140,7 @@ class SWJTUCalendar:
             # Judge if there is a class.
             for i, each in enumerate(tds):
                 text = each.text
-                if text != ' ':
+                if not text.isspace():
                     data[i] = text
                 else:
                     data[i] = None
@@ -184,8 +186,10 @@ class SWJTUCalendar:
                 each[1], year, each[-3], each[-2], each[-1], each[2]
             ])
 
-    def save_calendar(self, dir_) -> None:
+    def save_calendar(self, dir_, name) -> None:
         self.ics.generate_data_dict()
-        self.ics.save_file(path=dir_)
+        dir_ = os.path.join(dir_, "calendar")
+        os.makedirs(dir_, exist_ok=True)
+        self.ics.save_file(path=dir_, name=name)
 
 

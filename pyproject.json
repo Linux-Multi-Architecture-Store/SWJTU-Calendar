@@ -1,0 +1,85 @@
+{
+    "app_name": "SWJTU Calendar",
+    "app_version": "0.1.0",
+    "description": "一键将本学期课表导出到日历",
+    "authors": ["Yinan Qin <漓心@函.中国>"],
+    "build": {
+        "proj_dir": "SWJTU-Calendar",
+        "dist_dir": "dist/{app_name_kebab}-{app_version}",
+        "launchers": {
+            "{app_name}": {
+                "file": "SWJTU-Calendar/main.py",
+                "icon": "SWJTU-Calendar/src/imgs/logo.ico",
+                "function": "main",
+                "args": [],
+                "kwargs": {}
+            }
+        },
+        "readme": "",
+        "attachments": {
+            "./core/ics/sample.json": "assets",
+            "./core/ics/task.json": "assets"
+        },
+        "attachments_exclusions": [],
+        "attachments_exist_scheme": "overwrite",
+        "module_paths": [],
+        "module_paths_scheme": "translate",
+        "python_version": "3.9",
+        "venv": {
+            "enabled": true,
+            "mode": "source_venv",
+            "options": {
+                "depsland": {
+                    "venv_name": "{app_name_snake}_venv",
+                    "venv_id": "",
+                    "requirements": [],
+                    "offline": false,
+                    "local": ""
+                },
+                "source_venv": {
+                    "path": "",
+                    "copy_venv": true
+                },
+                "pip": {
+                    "requirements": [],
+                    "pypi_url": "https://pypi.python.org/simple/",
+                    "offline": false,
+                    "local": ""
+                },
+                "embed_python": {
+                    "path": ""
+                }
+            }
+        },
+        "compiler": {
+            "enabled": true,
+            "mode": "pyportable_crypto",
+            "options": {
+                "cythonize": {
+                    "c_compiler": "msvc",
+                    "python_path": "auto_detect"
+                },
+                "pyarmor": {
+                    "license": "trial",
+                    "obfuscate_level": 0
+                },
+                "pyc": {
+                    "optimize_level": 0
+                },
+                "pyportable_crypto": {
+                    "key": "{random}"
+                },
+                "zipapp": {
+                    "password": ""
+                }
+            }
+        },
+        "experimental_features": {
+            "add_pywin32_support": false,
+            "platform": "system_default"
+        },
+        "enable_console": true
+    },
+    "note": "",
+    "pyportable_installer_version": "4.4.0"
+}
