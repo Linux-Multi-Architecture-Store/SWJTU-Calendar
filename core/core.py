@@ -39,7 +39,8 @@ def _find_date_from_string(str_):
 
 def _get_class_info_from_str(string):
     # [ index_number, name, place, start_time, stop_time , day]
-
+    #ToDo： 识别 Lab,GX 这种格式
+    #ToDo： 冲突选课解决！
     infos = string.split()
 
     """
@@ -65,7 +66,7 @@ def _get_class_info_from_str(string):
 
 
 class SWJTUCalendar:
-    def __init__(self, filepath):
+    def __init__(self, filepath, week):
         """
         :param filepath: Path to html calendar file.
         :type filepath: str
@@ -99,17 +100,16 @@ class SWJTUCalendar:
         # The name of the dict will be class index, AND item will be
         # the classes found.
 
-        for each in range(1, 26, 1):
-            self._file = None
-            self._trs = None
-            self._titles = []
-            self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
-            self._classes = _create_2D_list()
+        self._file = None
+        self._trs = None
+        self._titles = []
+        self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
+        self._classes = _create_2D_list()
 
-            self._read_file(filepath, each)
-            self._get_dates()
-            self._sort_classes()
-            self._read_and_integrate_class_info()
+        self._read_file(filepath, week)
+        self._get_dates()
+        self._sort_classes()
+        self._read_and_integrate_class_info()
         self._create_icses_from_classes()
 
     def _read_file(self, file, index):
@@ -207,7 +207,7 @@ class SWJTUCalendar:
         os.makedirs(dir_, exist_ok=True)
         for each in self.ics:
             self.ics[each].generate_data_dict()
-            self.ics[each].save_file(path=dir_, name=each)
+            self.ics[each].save_file(path=dir_, name=self.classes_name[each])
 
     def _create_icses_from_classes(self):
         for each in self.classes:

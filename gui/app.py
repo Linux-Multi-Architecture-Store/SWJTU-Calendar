@@ -76,7 +76,7 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         file_selector = tk.LabelFrame(master, text="文件路径", padx=5, pady=5)
         file_selector.pack(side="top")
 
-        tk.Label(file_selector, text="HTML文件: ").grid(row=0)
+        tk.Label(file_selector, text="保存周次: ").grid(row=0)
         tk.Label(file_selector, text="文件保存目录： ").grid(row=1)
 
         entry_1 = tk.Entry(file_selector, textvariable=self.html_path)
@@ -84,9 +84,9 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         entry_1.grid(row=0, column=1, padx=10, pady=5)
         entry_2.grid(row=1, column=1, padx=10, pady=5)
 
-        button_1 = tk.Button(file_selector, text="打开", command=self.__get_txt_path)
+        # button_1 = tk.Button(file_selector, text="打开", command=self.__get_txt_path)
         button_2 = tk.Button(file_selector, text="打开", command=self.__get_txt_save_path)
-        button_1.grid(row=0, column=2, padx=5, pady=5)
+        # button_1.grid(row=0, column=2, padx=5, pady=5)
         button_2.grid(row=1, column=2, padx=5, pady=5)
 
         # Add menubar entry
@@ -114,7 +114,7 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
 
     def __get_txt_path(self):
         path = self.open_file()
-        self.log.insert(tk.INSERT, f"[ info ] Select HTML file: {str(path)} \n")
+        self.log.insert(tk.INSERT, f"[ info ] Select week: {str(path)} \n")
         self.html_path.set(path)
 
     def __get_txt_save_path(self):
@@ -126,14 +126,15 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         self.log.insert(tk.INSERT, "[ info ] Start to process! \n")
 
         def all_in_one():
-            html_path = utils.save_all_table_html()
+            week_num = self.html_path.get()
+            html_path = utils.save_given_week_table_html(week_num)
             """
             for i in range(1,26,1):
                 file = os.path.join(html_path, str(i) + ".html")
                 calendar = core.SWJTUCalendar(file)
                 calendar.save_calendar(self.save_path.get(), name=str(i))
             """
-            calendar = core.SWJTUCalendar(html_path)
+            calendar = core.SWJTUCalendar(html_path, week_num)
             calendar.save_calendar(self.save_path.get())
             path = str(os.path.join(self.save_path.get(), "calendar"))
             self.log.insert(tk.INSERT, f"""[ info ] Success! Stored in: \n {path}""" )
