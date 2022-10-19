@@ -127,11 +127,15 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
 
         def all_in_one():
             html_path = utils.save_all_table_html()
+            """
             for i in range(1,26,1):
                 file = os.path.join(html_path, str(i) + ".html")
                 calendar = core.SWJTUCalendar(file)
                 calendar.save_calendar(self.save_path.get(), name=str(i))
-            path = str(os.path.join(self.save_path.get(), ""))
+            """
+            calendar = core.SWJTUCalendar(html_path)
+            calendar.save_calendar(self.save_path.get())
+            path = str(os.path.join(self.save_path.get(), "calendar"))
             self.log.insert(tk.INSERT, f"""[ info ] Success! Stored in: \n {path}""" )
 
         thread = threading.Thread(

@@ -3,6 +3,7 @@ import re
 import json
 import time
 import uuid
+import core.ics.randomcolor as randomcolor
 
 
 class Ics:
@@ -16,6 +17,10 @@ class Ics:
         with open("core/ics/sample.json", mode="r", encoding="utf-8") as f:
             json_ = f.read()
             self.ics = json.loads(json_)
+        self.ics['VCALENDAR']['X-APPLE-CALENDAR-COLOR'] = randomcolor.get_random_colour()
+
+    def change_name(self, name):
+        self.ics['VCALENDAR']['X-WR-CALNAME'] = name
 
     def generate_data_dict(self):
         data_list = []

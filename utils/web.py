@@ -1,7 +1,7 @@
 import asyncio
 import pyppeteer
 import requests
-from .CaptchaRecognition import captcha as captcha_ocr
+# from .CaptchaRecognition import captcha as captcha_ocr
 
 cookie = None
 
@@ -11,7 +11,7 @@ async def main():
         'handleSIGINT': False,
         'handleSIGTERM': False,
         'handleSIGHUP': False,
-        'headless': True,
+        'headless': False,
         "devtools": False,
         "args": [
             '--window-size=1280,720'
@@ -19,18 +19,20 @@ async def main():
         'defaultViewport': {"width": 1280, "height": 720}
     })
     page = await browser.newPage()
-    await page.goto("http://jwc.swjtu.edu.cn/service/login.html")
+    # 首页登录功能已失效！
+    # await page.goto("http://jwc.swjtu.edu.cn/service/login.html")
+    await page.goto("https://cas.swjtu.edu.cn/authserver/login?service=http%3A%2F%2Fjwc.swjtu.edu.cn%2Fvatuu%2FUserLoginForWiseduAction")
     # await page.waitFor(3 * 1000)  # 等待10秒看看验证码长什么样
-    captcha = await page.waitForSelector('#randomPhoto img')  # 通过css selector定位验证码元素
-    await captcha.screenshot({'path': '/tmp/captcha.png'})  # 注意这里用的是ele.screenshot方法与教程1 page.screenshot是不同的
-    captcha_text = captcha_ocr("/tmp/captcha.png")
+    # captcha = await page.waitForSelector('#randomPhoto img')  # 通过css selector定位验证码元素
+    # await captcha.screenshot({'path': '/tmp/captcha.png'})  # 注意这里用的是ele.screenshot方法与教程1 page.screenshot是不同的
+    # captcha_text = captcha_ocr("/tmp/captcha.png")
 
-    await page.type("#username", "学号")
-    await page.type("#password", "密码")
-    await page.type("#ranstring", str(captcha_text))
-    await page.click("#submit2")
+    await page.type("#username", "2021110181")
+    await page.type("#password", "Ganyz123456")
+    # await page.type("#ranstring", str(captcha_text))
+    await page.click(".auth_login_btn")
 
-    await page.waitFor(10 * 1000)
+    await page.waitFor(15 * 1000)
     global cookie
     cookie = await page.cookies()
     await browser.close()
