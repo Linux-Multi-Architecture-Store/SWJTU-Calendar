@@ -6,7 +6,15 @@ import requests
 cookie = None
 
 
-async def main():
+async def main(username: str, password: str):
+    """
+
+    :param username: 用户名
+    :type username: str
+    :param password: 密码
+    :type password: str
+    :return: Coroutine[Any, Any, None]
+    """
     browser = await pyppeteer.launch({
         'handleSIGINT': False,
         'handleSIGTERM': False,
@@ -27,8 +35,8 @@ async def main():
     # await captcha.screenshot({'path': '/tmp/captcha.png'})  # 注意这里用的是ele.screenshot方法与教程1 page.screenshot是不同的
     # captcha_text = captcha_ocr("/tmp/captcha.png")
 
-    await page.type("#username", "2021110181")
-    await page.type("#password", "Ganyz123456")
+    await page.type("#username", username)
+    await page.type("#password", password)
     # await page.type("#ranstring", str(captcha_text))
     await page.click(".auth_login_btn")
 
@@ -38,8 +46,8 @@ async def main():
     await browser.close()
 
 
-def get_cookie():
-    asyncio.run(main())
+def get_cookie(username, password):
+    asyncio.run(main(username=username, password=password))
     return cookie
 
 
