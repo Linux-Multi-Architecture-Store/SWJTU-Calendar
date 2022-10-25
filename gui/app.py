@@ -70,8 +70,22 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         super().__init__(master)
 
         # Define variables
-        self.html_path = tk.StringVar()
+        self.week_num = tk.StringVar()
         self.save_path = tk.StringVar()
+        self.password = tk.StringVar()
+        self.username = tk.StringVar()
+
+        passwd_area = tk.LabelFrame(master, text="账号密码", padx=5, pady=5)
+        passwd_area.pack(side="top")
+
+        tk.Label(passwd_area, text="账号").grid(row=0)
+        tk.Label(passwd_area, text="密码").grid(row=1)
+
+        entry_username = tk.Entry(passwd_area, textvariable=self.username)
+        entry_username.grid(row=0, column=1, padx=10, pady=5)
+
+        entry_password = tk.Entry(passwd_area, textvariable=self.password, show="*")
+        entry_password.grid(row=1, column=1, padx=10, pady=5)
 
         file_selector = tk.LabelFrame(master, text="文件路径", padx=5, pady=5)
         file_selector.pack(side="top")
@@ -79,7 +93,7 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         tk.Label(file_selector, text="保存周次: ").grid(row=0)
         tk.Label(file_selector, text="文件保存目录： ").grid(row=1)
 
-        entry_1 = tk.Entry(file_selector, textvariable=self.html_path)
+        entry_1 = tk.Entry(file_selector, textvariable=self.week_num)
         entry_2 = tk.Entry(file_selector, textvariable=self.save_path)
         entry_1.grid(row=0, column=1, padx=10, pady=5)
         entry_2.grid(row=1, column=1, padx=10, pady=5)
@@ -115,7 +129,7 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
     def __get_txt_path(self):
         path = self.open_file()
         self.log.insert(tk.INSERT, f"[ info ] Select week: {str(path)} \n")
-        self.html_path.set(path)
+        self.week_num.set(path)
 
     def __get_txt_save_path(self):
         path = self.open_directory()
@@ -126,8 +140,8 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
         self.log.insert(tk.INSERT, "[ info ] Start to process! \n")
 
         def all_in_one():
-            week_num = self.html_path.get()
-            html_path = utils.save_given_week_table_html(week_num)
+            week_num = self.week_num.get()
+            html_path = utils.save_given_week_table_html(week_num, self.username.get(), self.password.get())
             """
             for i in range(1,26,1):
                 file = os.path.join(html_path, str(i) + ".html")

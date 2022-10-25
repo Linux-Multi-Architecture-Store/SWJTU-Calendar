@@ -17,8 +17,8 @@ def save_all_table_html():
     return temp_path
 
 
-def save_given_week_table_html(week_num):
-    cookies = webtools.get_cookie()
+def save_given_week_table_html(week_num, username, password):
+    cookies = webtools.get_cookie(username, password)
     temp_path = None
 
     tabel = webtools.get_class_table(cookies, week_num)
