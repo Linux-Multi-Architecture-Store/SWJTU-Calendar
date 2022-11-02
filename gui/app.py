@@ -6,7 +6,8 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import core
-import utils
+from core import utils
+
 
 class App(tk.Frame):
     """
