@@ -1,68 +1,8 @@
 from bs4 import BeautifulSoup as bs
-import re
 import os
 from datetime import datetime
 import core.ics as ics
-
-
-def _create_2D_list():
-    tis = []
-    for i in range(7):
-        tis.append([])
-        for j in range(13):
-            tis[i].append("")
-    return tis
-
-
-def _find_date_from_string(str_):
-    str_ = str(str_)
-
-    pattern = r"\d.*[日]"
-    date_full = re.search(pattern, str_)
-
-    pattern = r"\d*[^月]"
-    input_ = date_full[0]
-    month = re.search(pattern, input_)
-    month = str(month[0])
-
-    pattern = r"[月]\d*[^日]"
-    input_ = date_full[0]
-    day = re.search(pattern, input_)
-    pattern = r"\d.*"
-    input_ = day[0]
-    day = re.search(pattern, input_)
-    day = day[0]
-    day = str(day)
-
-    return month, day
-
-
-def _get_class_info_from_str(string):
-    # [ index_number, name, place, start_time, stop_time , day]
-    #ToDo： 识别 Lab,GX 这种格式
-    #ToDo： 冲突选课解决！
-    infos = string.split()
-
-    """
-    Some classes have a letter after the index, such as:
-    B4417  T  通信系统概论（肖嵩）2-5,15周 X30548
-    Thus we need to judge the second item is letters or not.
-    """
-    index_number = infos[0]
-    place = infos[-1]
-    if not infos[1].isalpha():  # If it is not an alpha
-        name = infos[1]
-    else:
-        name = infos[2]
-
-    pattern = "[\u4e00-\u9fa5]*[^（]"
-    name_found = re.search(pattern, name)
-    name_found = name_found[0]
-    name = str(name_found)
-
-    full = [index_number, name, place, "", "", ""]
-
-    return full
+from core.utils.utils import create_2D_list, find_date_from_string, get_class_info_from_str
 
 
 class SWJTUCalendar:
@@ -104,7 +44,7 @@ class SWJTUCalendar:
         self._trs = None
         self._titles = []
         self._dates = [[9, 12], [9, 13], [9, 14], [9, 15], [9, 16], [9, 17], [9, 18]]
-        self._classes = _create_2D_list()
+        self._classes = create_2D_list()
 
         self._read_file(filepath, week)
         self._get_dates()
@@ -130,7 +70,7 @@ class SWJTUCalendar:
 
         for i in range(-1, -8, -1):
             title = str(self._titles[i])
-            month, day = _find_date_from_string(self._titles[i])
+            month, day = find_date_from_string(self._titles[i])
             self._dates[i] = [month, day]
 
     def _sort_classes(self):
@@ -159,7 +99,7 @@ class SWJTUCalendar:
         for i, each in enumerate(self._classes):
             for j, class_ in enumerate(each):
                 if class_ is not None:
-                    info = _get_class_info_from_str(class_)
+                    info = get_class_info_from_str(class_)
                     start_time = self.start_end_times[j][0]
                     end_time = self.start_end_times[j][1]
                     day = self._dates[i]
