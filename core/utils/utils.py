@@ -1,4 +1,5 @@
 import re
+import warnings
 
 
 def create_2D_list():
@@ -34,9 +35,16 @@ def find_date_from_string(str_):
 
 
 def get_class_info_from_str(string):
+    """
+
+    :param string:
+    :return: [ index_number, name, place, start_time, stop_time , day]
+    """
     # [ index_number, name, place, start_time, stop_time , day]
     #ToDo： 识别 Lab,GX 这种格式
     #ToDo： 冲突选课解决！
+
+    warnings.warn("This funciton is being deprecated", DeprecationWarning)
     infos = string.split()
 
     """

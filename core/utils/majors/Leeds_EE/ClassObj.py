@@ -1,8 +1,8 @@
-from core.utils import Class
+from core.utils import ClassInfo
 
-class LeedsClass(Class):
+class LeedsClassInfo(ClassInfo):
     def __init__(self, name=None, date=None, place=None, time=None):
-        super(LeedsClass, self).__init__(name=name, date=date, place=place, time=time)
+        super(LeedsClassInfo, self).__init__(name=name, date=date, place=place, time=time)
 
         """
         This is the class type.
