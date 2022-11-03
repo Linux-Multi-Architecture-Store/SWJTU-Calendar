@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup as bs
 from core.utils import START_AND_END_TIMES
 from core.utils.utils import find_date_from_string, create_2D_list, get_class_info_from_str
 
+import re
+
 
 class ClassTime:
     """
@@ -29,20 +31,72 @@ class ClassTime:
     def get_end_time(self):
         return self.year + self.date + self.end_time + "00"
 
+    def __eq__(self, other):
+        if self.year == other.year:
+            if self.date == other.date:
+                if self.start_time == other.start_time:
+                    if self.end_time == other.end_time:
+                        return True
+
+        return False
+
+    def __lt__(self, other):
+        if self.year == other.year:
+            if self.date == other.date:
+                if self.start_time > other.start_time:
+                    if self.end_time > other.end_time:
+                        return True
+        return False
+
+    def __gt__(self, other):
+        if self.year == other.year:
+            if self.date == other.date:
+                if self.start_time < other.start_time:
+                    if self.end_time < other.end_time:
+                        return True
+        return False
 
 class ClassInfo:
     """
     Base class for SWJTU standard Class instances
     """
-    def __init__(self, info: list):
+    def __init__(self, class_string: str, ctime: ClassTime) -> None:
         """
-        Accept [ index_number, name, place, start_time, stop_time , day]
+        Accept standard class instances, e.g.
+
+        B1349  马克思主义基本原理（郑瑶） 1-17周 X1328
         """
+        self.name = ...
+        self.place = ...
+        self.time = ctime
+        self.index_number = ...
+        self.teacher_name = ...
+
+        self.infos = class_string.split()
+
+        self.place = self.infos[-1]
+        self.get_class_name()
+        self.get_class_index_number()
+        self.get_teacher_name()
+
+    def get_class_name(self) -> None:
+        pattern = "[\u4e00-\u9fa5]*[^（]"
+        name_found = re.search(pattern, self.infos[1])
+        name_found = name_found[0]
+        name = str(name_found)
+
         self.name = name
-        self.date = date
-        self.place = place
-        self.time = time
-        self.index_number = index_number
+
+    def get_class_index_number(self) -> None:
+        self.index_number = self.infos[0]
+
+    def get_teacher_name(self) -> None:
+        pattern = r"[\uff08][\u4e00-\u9fa5]*[\uff09]"
+        name_found = re.search(pattern, self.infos[1])
+        name_found = name_found[0]
+        name = str(name_found).strip("\uff08\uff09")
+
+        self.teacher_name = name
 
 
 class ClassTableHTML:
@@ -110,40 +164,30 @@ class ClassTableInfo:
         for i, each in enumerate(self.raw_data):
             for j, class_ in enumerate(each):
                 if class_ is not None:
-                    info = get_class_info_from_str(class_)
-                    start_time = START_AND_END_TIMES[j][0]
-                    end_time = START_AND_END_TIMES[j][1]
-                    day = html.dates[i]
-                    day = day[0] + day[1]
-
-                    info[-3] = start_time + "00"
-                    info[-2] = end_time + "00"
-                    info[-1] = day
-
                     time = ClassTime(
                         date=html.dates[i],
                         start_time=START_AND_END_TIMES[j][0],
                         end_time=START_AND_END_TIMES[j][1]
                     )
 
-                    this_class = ClassInfo(
-                        name=info[1],
-
+                    this_class = ClassType(
+                        class_string=class_,
+                        ctime=time
                     )
 
                     # Judge if current class is register in self.classes
                     _is_registered = False
                     for each in self.classes:
-                        if each == info[0]:
+                        if each == this_class.index_number:
                             _is_registered = True
                     if not _is_registered:
-                        _new_class = {info[0]: []}
+                        _new_class = {this_class.index_number: []}
                         self.classes.update(_new_class)
 
                     # Judge if class is added.
                     added = False
-                    for each in self.classes[info[0]]:
-                        if each[0] == info[0]:
+                    for each in self.classes[this_class.index_number]:
+                        if each.index_number == this_class.index_number:
                             if each[-1] == info[-1]:  # if same day, extend.
                                 if each[2] == info[2]:  # if is the same classroom, extend.
                                     added = True
