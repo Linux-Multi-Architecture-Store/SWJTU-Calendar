@@ -67,3 +67,6 @@ def get_class_info_from_str(string):
     full = [index_number, name, place, "", "", ""]
 
     return full
+
+def get_class_name_from_str(string):
+    pass
