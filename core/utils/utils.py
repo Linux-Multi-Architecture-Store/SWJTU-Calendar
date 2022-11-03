@@ -68,5 +68,4 @@ def get_class_info_from_str(string):
 
     return full
 
-def get_class_name_from_str(string):
-    pass
+
