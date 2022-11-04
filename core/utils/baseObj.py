@@ -43,23 +43,25 @@ class ClassTime:
     def __lt__(self, other):
         if self.year == other.year:
             if self.date == other.date:
-                if self.start_time > other.start_time:
-                    if self.end_time > other.end_time:
+                if self.start_time < other.start_time:
+                    if self.end_time < other.end_time:
                         return True
         return False
 
     def __gt__(self, other):
         if self.year == other.year:
             if self.date == other.date:
-                if self.start_time < other.start_time:
-                    if self.end_time < other.end_time:
+                if self.start_time > other.start_time:
+                    if self.end_time > other.end_time:
                         return True
         return False
+
 
 class ClassInfo:
     """
     Base class for SWJTU standard Class instances
     """
+
     def __init__(self, class_string: str, ctime: ClassTime) -> None:
         """
         Accept standard class instances, e.g.
@@ -97,6 +99,27 @@ class ClassInfo:
         name = str(name_found).strip("\uff08\uff09")
 
         self.teacher_name = name
+
+    def __eq__(self, other):
+        if self.index_number == other.index_number:
+            if self.place == other.place:
+                if self.time == other.time:
+                    return True
+        return False
+
+    def __lt__(self, other):
+        if self.index_number == other.index_number:
+            if self.place == other.place:
+                if self.time < other.time:
+                    return True
+        return False
+
+    def __gt__(self, other):
+        if self.index_number == other.index_number:
+            if self.place == other.place:
+                if self.time > other.time:
+                    return True
+        return False
 
 
 class ClassTableHTML:
@@ -136,11 +159,12 @@ class ClassTableHTML:
 
 
 class ClassTableInfo:
-    def __init__(self, html: ClassTableHTML):
+    def __init__(self, html: ClassTableHTML, ClassType: type):
         self.raw_data = create_2D_list()
         self.classes: dict[list[type]] = ...
 
         self._find_raw_class_data(html)
+        self._read_and_integrate_class_info(html, ClassType)
 
     def _find_raw_class_data(self, html: ClassTableHTML):
         for section in range(1, 14, 1):
@@ -186,15 +210,19 @@ class ClassTableInfo:
 
                     # Judge if class is added.
                     added = False
+
                     for each in self.classes[this_class.index_number]:
-                        if each.index_number == this_class.index_number:
-                            if each[-1] == info[-1]:  # if same day, extend.
-                                if each[2] == info[2]:  # if is the same classroom, extend.
-                                    added = True
-                                    if info[-3] < each[-3]:
-                                        each[-3] = info[-3]
-                                    if info[-2] > each[-2]:
-                                        each[-2] = info[-2]
+                        if each == this_class:
+                            added = True
+                            break
+                        if each > this_class:
+                            each.time.start_time = this_class.time.start_time
+                            added = True
+                            break
+                        if each < this_class:
+                            each.time.end_time = this_class.time.end_time
+                            added = True
+                            break
 
                     if not added:
-                        self.classes[info[0]].append(info)
+                        self.classes[this_class.index_number].append(this_class)
