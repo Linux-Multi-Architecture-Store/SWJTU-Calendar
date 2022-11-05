@@ -3,7 +3,9 @@ import re
 import json
 import time
 import uuid
-import core.ics.randomcolor as randomcolor
+import src.utils.base.ics.randomcolor as randomcolor
+from .defaults import DEFAULT_EVENT, DEFAULT_CAL
+from ... import ClassTableInfo
 
 
 class Ics:
@@ -14,9 +16,7 @@ class Ics:
         self.num_events = 0
 
     def _load_default(self):
-        with open("core/ics/sample.json", mode="r", encoding="utf-8") as f:
-            json_ = f.read()
-            self.ics = json.loads(json_)
+        self.ics = json.loads(DEFAULT_CAL)
         self.ics['VCALENDAR']['X-APPLE-CALENDAR-COLOR'] = randomcolor.get_random_colour()
 
     def change_name(self, name):
@@ -58,7 +58,7 @@ class Ics:
         with open(file_full_path, mode="w", encoding="utf-8") as f:
             f.writelines(self.data_list)
 
-    def create_task(self, info) -> None:
+    def create_task(self, cls_info: type) -> None:
         """
         This is the function to create task.
         [name, "2022", "091300", "081200", "0913", place]
@@ -66,21 +66,23 @@ class Ics:
         :type info: list
         :return:
         """
-        time_start = info[1] + info[4] + "T" + info[2]
-        time_stop = info[1] + info[4] + "T" + info[3]
+        time_start = cls_info.time.get_start_time()
+        time_stop = cls_info.time.get_end_time()
 
-        with open("core/ics/task.json", mode="r", encoding="utf-8") as f:
-            json_ = f.read()
-            task = json.loads(json_)
+        task = json.loads(DEFAULT_EVENT)
         task["VEVENT"]['CREATED'] = "19890917T020000"
         task["VEVENT"]['UID'] = str(uuid.uuid4()).upper()
         task["VEVENT"]["DTEND;TZID=Asia/Shanghai"] = time_stop
         task["VEVENT"]["DTSTART;TZID=Asia/Shanghai"] = time_start
-        task["VEVENT"]['SUMMARY'] = info[0]
-        task["VEVENT"]['LOCATION'] = info[5]
+        task["VEVENT"]['SUMMARY'] = cls_info.name
+        task["VEVENT"]['LOCATION'] = cls_info.place
         task["VEVENT"]["SEQUENCE"] = str(self.num_events + 1)
 
         add = {"task_identify" + str(self.num_events + 1): task}
 
         self.ics['VCALENDAR'].update(add)
         self.num_events += 1
+
+class ClassIcs:
+    def __init__(self, cls_table: ClassTableInfo):
+        self.ics = {}

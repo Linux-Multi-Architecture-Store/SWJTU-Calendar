@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup as bs
 import os
 from datetime import datetime
-import core.ics as ics
-from core.utils.utils import create_2D_list, find_date_from_string, get_class_info_from_str
+import src.utils.base.ics as ics
+from src.utils.utils import create_2D_list, find_date_from_string, get_class_info_from_str
 
 
 class SWJTUCalendar:

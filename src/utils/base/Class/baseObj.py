@@ -2,8 +2,8 @@ from datetime import datetime
 import os
 from bs4 import BeautifulSoup as bs
 
-from core.utils import START_AND_END_TIMES
-from core.utils.utils import find_date_from_string, create_2D_list, get_class_info_from_str
+from src.utils.constants import START_AND_END_TIMES
+from src.utils.utils import find_date_from_string, create_2D_list, get_class_info_from_str
 
 import re
 
@@ -26,10 +26,10 @@ class ClassTime:
         self.end_time = end_time
 
     def get_start_time(self):
-        return self.year + self.date + self.start_time + "00"
+        return self.year + self.date + "T" + self.start_time + "00"
 
     def get_end_time(self):
-        return self.year + self.date + self.end_time + "00"
+        return self.year + self.date + "T" + self.end_time + "00"
 
     def __eq__(self, other):
         if self.year == other.year:
