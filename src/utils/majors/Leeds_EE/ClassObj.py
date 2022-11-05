@@ -1,4 +1,4 @@
-from core.utils import ClassInfo
+from src.utils import ClassInfo
 
 class LeedsClassInfo(ClassInfo):
     def __init__(self, name=None, date=None, place=None, time=None):
