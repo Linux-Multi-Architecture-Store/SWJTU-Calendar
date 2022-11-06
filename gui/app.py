@@ -5,8 +5,9 @@ import os
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import core
-import utils
+import src
+from src import utils
+
 
 class App(tk.Frame):
     """
@@ -145,10 +146,10 @@ class MainApp(App):  # pylint: disable=too-many-ancestors
             """
             for i in range(1,26,1):
                 file = os.path.join(html_path, str(i) + ".html")
-                calendar = core.SWJTUCalendar(file)
+                calendar = src.SWJTUCalendar(file)
                 calendar.save_calendar(self.save_path.get(), name=str(i))
             """
-            calendar = core.SWJTUCalendar(html_path, week_num)
+            calendar = src.SWJTUCalendar(html_path, week_num)
             calendar.save_calendar(self.save_path.get())
             path = str(os.path.join(self.save_path.get(), "calendar"))
             self.log.insert(tk.INSERT, f"""[ info ] Success! Stored in: \n {path}""" )
