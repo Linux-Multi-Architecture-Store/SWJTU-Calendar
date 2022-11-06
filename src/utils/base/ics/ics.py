@@ -84,5 +84,18 @@ class Ics:
         self.num_events += 1
 
 class ClassIcs:
-    def __init__(self, cls_table: ClassTableInfo):
+    def __init__(self, cls_table: ClassTableInfo) -> None:
         self.ics = {}
+        self.classe_table = cls_table
+
+    def _create_ics_for_a_class(self, class_index) -> None:
+
+        _ics = Ics()
+        _ics.change_name(self.classe_table.classes[class_index][0].name)
+        _new_dict = {class_index: _ics}
+        self.ics.update(_new_dict)
+
+    def _create_ics_for_all_classes(self, cls_table: ClassTableInfo) -> None:
+
+        for each in cls_table.classes:
+            self._create_ics_for_a_class(each)
