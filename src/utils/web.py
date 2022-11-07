@@ -1,9 +1,42 @@
 import asyncio
 import pyppeteer
 import requests
+import platform
+
 # from .CaptchaRecognition import captcha as captcha_ocr
 
 cookie = None
+
+
+def _get_options():
+    os = platform.system()
+    if os == "Linux":
+        opt = {
+            'handleSIGINT': False,
+            'handleSIGTERM': False,
+            'handleSIGHUP': False,
+            'headless': False,
+            "devtools": False,
+            "executablePath": "/usr/bin/x-www-browser",
+            "args": [
+                '--window-size=1280,720'
+            ],
+            'defaultViewport': {"width": 1280, "height": 720}
+        }
+    else:
+        opt = {
+            'handleSIGINT': False,
+            'handleSIGTERM': False,
+            'handleSIGHUP': False,
+            'headless': False,
+            "devtools": False,
+            "args": [
+                '--window-size=1280,720'
+            ],
+            'defaultViewport': {"width": 1280, "height": 720}
+        }
+
+    return opt
 
 
 async def main(username: str, password: str):
@@ -15,21 +48,12 @@ async def main(username: str, password: str):
     :type password: str
     :return: Coroutine[Any, Any, None]
     """
-    browser = await pyppeteer.launch({
-        'handleSIGINT': False,
-        'handleSIGTERM': False,
-        'handleSIGHUP': False,
-        'headless': False,
-        "devtools": False,
-        "args": [
-            '--window-size=1280,720'
-        ],
-        'defaultViewport': {"width": 1280, "height": 720}
-    })
+    browser = await pyppeteer.launch(_get_options())
     page = await browser.newPage()
     # 首页登录功能已失效！
     # await page.goto("http://jwc.swjtu.edu.cn/service/login.html")
-    await page.goto("https://cas.swjtu.edu.cn/authserver/login?service=http%3A%2F%2Fjwc.swjtu.edu.cn%2Fvatuu%2FUserLoginForWiseduAction")
+    await page.goto(
+        "https://cas.swjtu.edu.cn/authserver/login?service=http%3A%2F%2Fjwc.swjtu.edu.cn%2Fvatuu%2FUserLoginForWiseduAction")
     # await page.waitFor(3 * 1000)  # 等待10秒看看验证码长什么样
     # captcha = await page.waitForSelector('#randomPhoto img')  # 通过css selector定位验证码元素
     # await captcha.screenshot({'path': '/tmp/captcha.png'})  # 注意这里用的是ele.screenshot方法与教程1 page.screenshot是不同的
@@ -81,5 +105,3 @@ def get_class_table(cookies, week):
     res = requests.post(url=url, data=data, headers=headers)
     print("[ info ] Get table: ", week)
     return res.text
-
-
