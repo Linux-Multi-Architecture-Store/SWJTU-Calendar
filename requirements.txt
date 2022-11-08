@@ -2,3 +2,4 @@ beautifulsoup4==4.11.1
 pyppeteer
 requests==2.28.1
 html5lib==1.1
+dearpygui==1.6.2
