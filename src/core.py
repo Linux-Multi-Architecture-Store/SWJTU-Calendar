@@ -1,6 +1,7 @@
 from .utils import ClassTableHTML, ClassTableInfo, ClassInfo
 from .utils.base import ClassIcs
 
+
 class SWJTUCalendar:
     def __init__(self, filepath, week):
         self.html = ClassTableHTML(filepath, week)
