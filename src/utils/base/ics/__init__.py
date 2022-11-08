@@ -1,5 +1,5 @@
-from src.utils.base.ics.ics import Ics
+from .ics import Ics, ClassIcs
 
 __all__ = [
-    "Ics"
+    "Ics", "ClassIcs"
 ]
