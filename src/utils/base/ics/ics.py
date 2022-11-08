@@ -83,15 +83,19 @@ class Ics:
         self.ics['VCALENDAR'].update(add)
         self.num_events += 1
 
+
 class ClassIcs:
     def __init__(self, cls_table: ClassTableInfo) -> None:
         self.ics = {}
-        self.classe_table = cls_table
+        self.class_table = cls_table
+
+        self._create_ics_for_all_classes(cls_table)
+        self._add_tasks_from_classes(cls_table)
 
     def _create_ics_for_a_class(self, class_index) -> None:
 
         _ics = Ics()
-        _ics.change_name(self.classe_table.classes[class_index][0].name)
+        _ics.change_name(self.class_table.classes[class_index][0].name)
         _new_dict = {class_index: _ics}
         self.ics.update(_new_dict)
 
@@ -99,3 +103,22 @@ class ClassIcs:
 
         for each in cls_table.classes:
             self._create_ics_for_a_class(each)
+
+    def _add_tasks_from_classes(self, cls_table: ClassTableInfo) -> None:
+
+        for cls_index in cls_table.classes:
+            for each_class in cls_table.classes[cls_index]:
+                self.ics[cls_index].create_task(each_class)
+
+    def save_as_ics(self, path: str) -> str:
+
+        out_path = os.path.join(path, "ics")
+        os.makedirs(out_path, exist_ok=True)
+        for each in self.ics:
+            self.ics[each].generate_data_dict()
+            self.ics[each].save_file(
+                name=self.class_table.classes[each][0].name,
+                path=out_path
+            )
+
+        return out_path
