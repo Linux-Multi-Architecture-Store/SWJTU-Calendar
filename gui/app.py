@@ -1,165 +1,76 @@
-"""
-This is GUI module.
-"""
-import os
-import threading
-import tkinter as tk
-from tkinter import filedialog, messagebox
-import src
-from src import utils
+import dearpygui.dearpygui as dpg
+import gui.utils as utils
+import src.infos
+from src.infos import SUPPORTED_SCHOOL
 
 
-class App(tk.Frame):
-    """
-    This is basic App class.
-    """
+def App():
+    dpg.create_context()
 
-    def __init__(self, root):
-        """
-        :param root: root object of tk
-        """
-        super().__init__(root)
-        self.root = root
-        self.pack()
+    font = utils.add_fonts_and_dpi("assets/fonts/Source_Code_Pro_and_YaHei.ttf", 1.5)
 
-        menubar = tk.Frame(root)
-        menubar.pack()
+    with dpg.value_registry():
+        dpg.add_string_value(tag="username")
+        dpg.add_string_value(tag="password")
+        dpg.add_string_value(tag="selected_school")
+        dpg.add_string_value(tag="selected_major")
+        dpg.add_int_value(tag="selected_week")
+        dpg.add_string_value(tag="selected_saving_path")
 
-        # Define menubar
-        self.menubar = tk.Menu(menubar)
-        self.menubar_file = tk.Menu(self.menubar, tearoff=False)
+    with dpg.window(label="Calendar 日历") as main:
+        utils.add_menu()
 
-        # Add submenu
-        self.menubar.add_cascade(label="文件", menu=self.menubar_file)
+        with dpg.collapsing_header(label="统一身份认证"):
+            with dpg.group(horizontal=True):
+                dpg.add_text("用户名：")
+                dpg.add_input_text(source="username")
+            with dpg.group(horizontal=True):
+                dpg.add_text("密  码：")
+                dpg.add_input_text(source="password", password=True)
 
-        # File menubar
+        with dpg.collapsing_header(label="导出设置"):
+            with dpg.group(horizontal=True):
+                dpg.add_text("学院模板：")
+                dpg.add_combo(
+                    items=SUPPORTED_SCHOOL,
+                    source="selected_school",
+                    callback=src.infos.update_displayed_courses
+                )
+                with dpg.tooltip(dpg.last_item()):
+                    dpg.add_text("选择对应的学院~~\n如果没有选默认就好辣！")
+            with dpg.group(horizontal=True):
+                dpg.add_text("专业模板：")
+                dpg.add_combo(
+                    items=src.infos.get_courses_from_school(),
+                    source="selected_major",
+                    tag="Selected_major"
+                )
+            with dpg.group(horizontal=True):
+                dpg.add_text("保存周次：")
+                dpg.add_input_int(source="selected_week")
 
-        self.menubar_file.add_command(label="退出", command=root.quit)
+            with dpg.group(horizontal=True):
+                _dir_select = dpg.add_file_dialog(
+                    directory_selector=True,
+                    show=False,
+                    callback=utils.store_selected_saving_path
+                )
+                dpg.add_button(label="保存位置", callback=lambda: dpg.show_item(_dir_select))
+                dpg.add_text(tag="disp-dir-1", default_value="")
 
-        # Config menubar
-        root.config(menu=self.menubar)
+            with dpg.group(horizontal=True):
+                dpg.add_text("输出格式:")
+                dpg.add_radio_button(("ics", "txt", "csv"), horizontal=True)
 
-        self.placeholder = None
+        dpg.add_button(label="开始！ bui~")
 
-    def open_file(self) -> str:
-        """
-        Open fle Base function.
-        :return: filename
-        """
-        filename = filedialog.askopenfilename()
-        self.placeholder = None
+        dpg.bind_font(font)
 
-        return filename
+    dpg.create_viewport(title='SWJTU Calendar', width=900, height=600)
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
 
-    def open_directory(self) -> str:
-        """
-        Open dir base function.
-        :return: dir name
-        """
-        directory_name = filedialog.askdirectory()
-        self.placeholder = None
+    dpg.set_primary_window(main, True)
 
-        return directory_name
-
-
-class MainApp(App):  # pylint: disable=too-many-ancestors
-    """
-    This is the class for MainApp
-    """
-
-    def __init__(self, master):
-        super().__init__(master)
-
-        # Define variables
-        self.week_num = tk.StringVar()
-        self.save_path = tk.StringVar()
-        self.password = tk.StringVar()
-        self.username = tk.StringVar()
-
-        passwd_area = tk.LabelFrame(master, text="账号密码", padx=5, pady=5)
-        passwd_area.pack(side="top")
-
-        tk.Label(passwd_area, text="账号").grid(row=0)
-        tk.Label(passwd_area, text="密码").grid(row=1)
-
-        entry_username = tk.Entry(passwd_area, textvariable=self.username)
-        entry_username.grid(row=0, column=1, padx=10, pady=5)
-
-        entry_password = tk.Entry(passwd_area, textvariable=self.password, show="*")
-        entry_password.grid(row=1, column=1, padx=10, pady=5)
-
-        file_selector = tk.LabelFrame(master, text="文件路径", padx=5, pady=5)
-        file_selector.pack(side="top")
-
-        tk.Label(file_selector, text="保存周次: ").grid(row=0)
-        tk.Label(file_selector, text="文件保存目录： ").grid(row=1)
-
-        entry_1 = tk.Entry(file_selector, textvariable=self.week_num)
-        entry_2 = tk.Entry(file_selector, textvariable=self.save_path)
-        entry_1.grid(row=0, column=1, padx=10, pady=5)
-        entry_2.grid(row=1, column=1, padx=10, pady=5)
-
-        # button_1 = tk.Button(file_selector, text="打开", command=self.__get_txt_path)
-        button_2 = tk.Button(file_selector, text="打开", command=self.__get_txt_save_path)
-        # button_1.grid(row=0, column=2, padx=5, pady=5)
-        button_2.grid(row=1, column=2, padx=5, pady=5)
-
-        # Add menubar entry
-        self.menubar_file.add_command(label="打开", command=self.__get_txt_path)
-
-        bottom_area = tk.Frame(master, padx=5, pady=5)
-        bottom_area.pack(side="bottom")
-
-        button_3 = tk.Button(bottom_area, text="Bui~!", command=self.__main_process)
-        button_4 = tk.Button(bottom_area, text="打开dir~")
-        button_3.grid(row=0, column=0, padx=10, pady=5, sticky="w")
-        button_4.grid(row=0, column=1, padx=10, pady=5, sticky="e")
-
-        output_area = tk.LabelFrame(master, text="输出", padx=5, pady=5)
-        output_area.pack(side="bottom")
-
-        scrollbar1 = tk.Scrollbar(output_area)
-        scrollbar1.pack(side=tk.RIGHT, fill=tk.Y)
-
-        self.log = tk.Text(output_area, yscrollcommand=scrollbar1.set, width=43, height=5)
-        self.log.pack()
-        scrollbar1.config(command=self.log.yview)
-
-        self.log.insert(tk.INSERT, '[ info ] Programme started! ' + "\n")
-
-    def __get_txt_path(self):
-        path = self.open_file()
-        self.log.insert(tk.INSERT, f"[ info ] Select week: {str(path)} \n")
-        self.week_num.set(path)
-
-    def __get_txt_save_path(self):
-        path = self.open_directory()
-        self.log.insert(tk.INSERT, f"[ info ] Select save path: {str(path)} \n")
-        self.save_path.set(path)
-
-    def __main_process(self):
-        self.log.insert(tk.INSERT, "[ info ] Start to process! \n")
-
-        def all_in_one():
-            week_num = self.week_num.get()
-            html_path = utils.save_given_week_table_html(week_num, self.username.get(), self.password.get())
-            """
-            for i in range(1,26,1):
-                file = os.path.join(html_path, str(i) + ".html")
-                calendar = src.SWJTUCalendar(file)
-                calendar.save_calendar(self.save_path.get(), name=str(i))
-            """
-            calendar = src.SWJTUCalendar(html_path, week_num)
-            calendar.save_calendar(self.save_path.get())
-            path = str(os.path.join(self.save_path.get(), "calendar"))
-            self.log.insert(tk.INSERT, f"""[ info ] Success! Stored in: \n {path}""" )
-
-        thread = threading.Thread(
-            target=all_in_one,
-            name="process1"
-        )
-        thread.start()
-        messagebox.showinfo(
-            title="",
-            message="任务开始！"
-        )
+    dpg.start_dearpygui()
+    dpg.destroy_context()
