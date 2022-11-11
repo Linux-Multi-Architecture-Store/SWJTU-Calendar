@@ -126,7 +126,7 @@ class ClassTableHTML:
     def __init__(self, filepath, week):
         self.table_body = None
         self.trs = None
-        self.dates: list = ...
+        self.dates: list = []
 
         self._read_file(filepath, week)
         self._get_dates()
@@ -141,7 +141,7 @@ class ClassTableHTML:
             self.trs = self.table_body.find_all("tr")
 
     def _get_dates(self):
-        _titles: list = ...
+        _titles: list = []
         title_tr = self.trs[0]
         tds = title_tr.find_all("td")
 
