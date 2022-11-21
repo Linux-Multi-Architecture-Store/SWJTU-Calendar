@@ -15,4 +15,4 @@
 # 动态
 - 2022-11-7 计划从tinker框架换为kivy框架，目前的master分支代码无法使用~请使用V1.0源码使用，等待后续更新~~ ღ( ´･ᴗ･` )比心
 - 2022-11-8 更改为  [Dear PyGui](https://dearpygui.readthedocs.io/) ┭┮﹏┭┮
-- 对象化编程后有些许bug，具体进度参考其他分支！lala~
+- 对象化编程后有些许bug，具体进度参考其他分支！lala~ 
