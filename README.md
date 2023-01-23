@@ -14,6 +14,12 @@
 # 开发
 本项目在 ~~云效codeup~~ GitHub上面开发，请在GitHub上提交issues，pr!
 
+# 如何贡献？
+
+1. Fork 本仓库
+2. 修改/添加代码
+3. 创建Pull Requests
+
 # 动态
 - 2022-11-7 计划从tinker框架换为kivy框架，目前的master分支代码无法使用~请使用V1.0源码使用，等待后续更新~~ ღ( ´･ᴗ･` )比心
 - 2022-11-8 更改为  [Dear PyGui](https://dearpygui.readthedocs.io/) ┭┮﹏┭┮
