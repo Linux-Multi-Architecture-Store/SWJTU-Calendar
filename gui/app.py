@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 import gui.utils as utils
 import src.infos
+from gui.utils import StartProcess
 from src.infos import SUPPORTED_SCHOOL
 
 
@@ -62,7 +63,7 @@ def App():
                 dpg.add_text("输出格式:")
                 dpg.add_radio_button(("ics", "txt", "csv"), horizontal=True)
 
-        dpg.add_button(label="开始！ bui~")
+        dpg.add_button(label="开始！ bui~", callback=StartProcess)
 
         dpg.bind_font(font)
 
