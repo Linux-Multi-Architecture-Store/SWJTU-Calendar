@@ -2,8 +2,8 @@ from datetime import datetime
 import os
 from bs4 import BeautifulSoup as bs
 
-from src.utils.constants import START_AND_END_TIMES
-from src.utils.utils import find_date_from_string, create_2D_list, get_class_info_from_str
+from unical.utils.constants import START_AND_END_TIMES
+from unical.utils.utils import find_date_from_string, create_2D_list, get_class_info_from_str
 
 import re
 
