@@ -8,4 +8,4 @@ def router(app) -> None:
     """
     All the router should be defined in this file.
     """
-    app.add_route('/things', AboutService())
+    app.add_route('/about', AboutService())

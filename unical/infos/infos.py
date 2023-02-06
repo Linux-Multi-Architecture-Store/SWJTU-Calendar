@@ -1,4 +1,4 @@
-APP_VERSION = "V2.0.0.20221110_beta"
+APP_VERSION = "2.0.0.20221110-beta1"
 
 SUPPORTED_SCHOOL = [
     "默认",
