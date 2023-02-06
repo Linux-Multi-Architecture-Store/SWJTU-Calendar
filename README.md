@@ -14,6 +14,10 @@
 # 开发
 本项目在 ~~云效codeup~~ GitHub上面开发，请在GitHub上提交issues，pr!
 
+目前本项目的活动开发仓库设置在gitcode上面 <https://gitcode.net/weixin_46341175/SWJTU-Calendar>
+
+请优先在上面提交，所做的更改将同步到GitHub。
+
 # 如何贡献？
 
 1. Fork 本仓库
