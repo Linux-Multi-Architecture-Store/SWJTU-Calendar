@@ -3,9 +3,9 @@ import re
 import json
 import time
 import uuid
-import src.utils.base.ics.randomcolor as randomcolor
+import unical.utils.base.ics.randomcolor as randomcolor
 from .defaults import DEFAULT_EVENT, DEFAULT_CAL
-from src.utils.base import ClassTableInfo
+from unical.utils.base import ClassTableInfo
 
 
 class Ics:
