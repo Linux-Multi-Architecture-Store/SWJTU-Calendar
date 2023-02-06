@@ -1,5 +1,3 @@
-# examples/things.py
-
 # Let's get this party started!
 from wsgiref.simple_server import make_server
 
