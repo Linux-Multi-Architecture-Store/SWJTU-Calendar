@@ -41,8 +41,8 @@ def get_class_info_from_str(string):
     :return: [ index_number, name, place, start_time, stop_time , day]
     """
     # [ index_number, name, place, start_time, stop_time , day]
-    #ToDo： 识别 Lab,GX 这种格式
-    #ToDo： 冲突选课解决！
+    # ToDo： 识别 Lab,GX 这种格式
+    # ToDo： 冲突选课解决！
 
     warnings.warn("This funciton is being deprecated", DeprecationWarning)
     infos = string.split()
@@ -69,3 +69,38 @@ def get_class_info_from_str(string):
     return full
 
 
+class VersionNumber:
+    def __init__(self, version: str = None):
+        if self.check_version_number(version):
+            self.minor_version = None
+            self.major_version = None
+            self.pre_release = None
+            self.patch_version = None
+            self.version = version
+
+            self.process_version()
+        else:
+            raise ValueError(f"Wrong version number: {version}")
+
+    def process_version(self):
+        # find version like 0.0.1-alpha1
+        pattern = "[0-9]*[.][0-9]*[.][0-9]*[-][a-zA-Z]*[0-9]*[^+]"
+        remove_suffix = re.match(pattern, self.version)[0]
+
+        splited = re.split("[.-]", remove_suffix)
+
+        self.major_version = splited[0]
+        self.minor_version = splited[1]
+        self.patch_version = splited[2]
+
+        try:
+            self.pre_release = splited[3]
+        except IndexError:
+            self.pre_release = None
+        else:
+            pass
+
+    @staticmethod
+    def check_version_number(version):
+        p = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
+        return not (re.match(p, version) is None)
