@@ -89,6 +89,8 @@ class VersionNumber:
 
         splited = re.split("[.-]", remove_suffix)
 
+        self.splited = splited
+
         self.major_version = splited[0]
         self.minor_version = splited[1]
         self.patch_version = splited[2]
@@ -104,3 +106,51 @@ class VersionNumber:
     def check_version_number(version):
         p = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
         return not (re.match(p, version) is None)
+
+    def __lt__(self, other):
+        if self.major_version < other.major_version:
+            return True
+        elif self.minor_version < other.minor_version:
+            return True
+        elif self.patch_version < other.patch_version:
+            return True
+        elif (self.pre_release < other.pre_release) | ((self.pre_release is not None) & (other.pre_release is None)):
+            return True
+        else:
+            return False
+
+    def __gt__(self, other):
+        if self.major_version > other.major_version:
+            return True
+        elif self.minor_version > other.minor_version:
+            return True
+        elif self.patch_version > other.patch_version:
+            return True
+        elif (self.pre_release > other.pre_release) | ((self.pre_release is None) & (other.pre_release is not None)):
+            return True
+        else:
+            return False
+
+    def __eq__(self, other):
+        return self.splited == other.splited
+
+    def __ne__(self, other):
+        if self.__gt__(other):
+            return True
+        elif self.__lt__(other):
+            return True
+        elif not self.__eq__(other):
+            return True
+        return False
+
+    def __ge__(self, other):
+        if (self.__gt__(other)) | (self.__eq__(other)):
+            return True
+        else:
+            return False
+
+    def __le__(self, other):
+        if (self.__lt__(other)) | (self.__eq__(other)):
+            return True
+        else:
+            return False
