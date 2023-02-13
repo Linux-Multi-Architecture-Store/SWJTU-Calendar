@@ -14,6 +14,10 @@
 # 开发
 本项目在 ~~云效codeup~~ GitHub上面开发，请在GitHub上提交issues，pr!
 
+目前本项目的活动开发仓库设置在gitcode上面 <https://gitcode.net/weixin_46341175/SWJTU-Calendar>
+
+请优先在上面提交，所做的更改将同步到GitHub。
+
 # 如何贡献？
 
 1. Fork 本仓库
@@ -25,3 +29,4 @@
 - 2022-11-8 更改为  [Dear PyGui](https://dearpygui.readthedocs.io/) ┭┮﹏┭┮
 - 对象化编程后有些许bug，具体进度参考其他分支！lala~ 
 - 2023-1-23 移动项目
+- 2023-1-27 将本项目作为CLI，GUI和订阅服务器将由Qt编写。本项目将只提供接口！
