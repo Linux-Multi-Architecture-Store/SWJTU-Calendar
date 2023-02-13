@@ -1,4 +1,4 @@
-import unical.utils.web as webtools
+import unical.core.web as webtools
 import os
 
 

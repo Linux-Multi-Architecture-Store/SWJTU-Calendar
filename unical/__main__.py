@@ -1,7 +1,7 @@
 # Let's get this party started!
 import logging
 import os
-from unical.utils import Logger
+from unical.core import Logger
 from wsgiref.simple_server import make_server
 from unical.srv import router
 import falcon
