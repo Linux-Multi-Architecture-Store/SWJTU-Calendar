@@ -1,6 +1,6 @@
 import logging
 from sqlite3.dbapi2 import Connection
-from ..utils import VersionNumber
+from ..utils.utils import VersionNumber
 from unical.infos import DATA_COMPATIBILITY_VERSION
 
 
