@@ -1,19 +1,31 @@
 # Let's get this party started!
+import logging
+import os
+from unical.utils import Logger
 from wsgiref.simple_server import make_server
-
 from unical.srv import router
-
 import falcon
+import pathlib
+import time
+
+time_tuple = time.localtime(time.time())
+log_name = "{}-{}-{}-{}-{}-{}.log".format(time_tuple[0], time_tuple[1], time_tuple[2], time_tuple[3], time_tuple[4], time_tuple[5])
+path = pathlib.Path.home()
+path = os.path.join(path, ".config", "unical", "logs")
+os.makedirs(path, exist_ok=True)
+logger = Logger(os.path.join(path, log_name), logging.ERROR, logging.DEBUG)
+print("Logs are save in {}".format(os.path.join(path, log_name)))
+
 
 # falcon.App instances are callable WSGI apps
 # in larger applications the app is created in a separate file
 app = falcon.App()
 
-router(app)
+router(app, logger)
 
 if __name__ == '__main__':
     with make_server('', 8000, app) as httpd:
-        print('Serving on port 8000...')
+        logger.war('Serving on port 8000...')
 
         # Serve until process is killed
         httpd.serve_forever()

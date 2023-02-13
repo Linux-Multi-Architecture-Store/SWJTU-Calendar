@@ -2,6 +2,9 @@ import falcon
 from unical.infos import APP_VERSION
 
 class AboutService:
+    def __init__(self, logger=None):
+        self.logger = logger
+
     def on_get(self, request, response):
         """Handles GET requests"""
         response.status = falcon.HTTP_200  # This is the default status
