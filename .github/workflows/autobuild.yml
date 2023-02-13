@@ -36,14 +36,14 @@ jobs:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Build project
         run: poetry build
-        
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "autobuild"
-          prerelease: false
-          title: "Latest auto Build"
-          files: |
-              **/dist/*.tar.gz
-              **/dist/*.whl
+      # - uses: "marvinpinto/action-automatic-releases@latest"
+        # with:
+          # repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          # automatic_release_tag: "autobuild"
+          # prerelease: false
+          # title: "Latest auto Build"
+          # files: |
+              # **/dist/*.tar.gz
+              # **/dist/*.whl
+
