@@ -1,4 +1,7 @@
+import logging
 from sqlite3.dbapi2 import Connection
+from ..utils import VersionNumber
+from unical.infos import DATA_COMPATIBILITY_VERSION
 
 
 def init_table(conn: Connection):
@@ -20,8 +23,24 @@ def init_table(conn: Connection):
 """)
 
     # Store the data compability info
-    conn.execute("""INSERT INTO "main"."U_system_info"("name", "value") VALUES ('DATA_COMPABILITY_VERSION', '0.0.1-alpha1')""")
+    # conn.execute("""INSERT INTO "main"."U_system_info"("name", "value") VALUES ('DATA_COMPATIBILITY_VERSION', '0.0.1-alpha1')""")
+    temp = conn.execute("""SELECT * FROM U_system_info WHERE name = 'DATA_COMPATIBILITY_VERSION';""")
+    temp = temp.fetchone()
 
+    if temp is None:
+        conn.execute(f"""INSERT INTO "main"."U_system_info"("name", "value") VALUES ('DATA_COMPATIBILITY_VERSION', '{DATA_COMPATIBILITY_VERSION.version}')""")
+    else:
+        db_version = VersionNumber(temp[1])
+        version_to_install = DATA_COMPATIBILITY_VERSION
+
+        if db_version.major_version != version_to_install.major_version:
+            raise Exception(f"""The installed dataset is not of compatibility with the verion supported.
+            Expect version {version_to_install.major_version}, but {db_version.major_version} detected.""")
+        elif db_version <= version_to_install:
+            conn.execute(f"""UPDATE U_system_info SET value = '{version_to_install.version}' WHERE name = 'DATA_COMPATIBILITY_VERSION'""")
+        else:
+            logging.warning(f"The installed version of dataset {db_version.version} is higher than the program version {version_to_install.version}")
+            
     conn.execute("PRAGMA foreign_keys = true;")
 
     conn.commit()

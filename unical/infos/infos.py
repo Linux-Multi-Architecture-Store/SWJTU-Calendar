@@ -1,5 +1,7 @@
-APP_VERSION = "2.0.0.20221110-beta1"
-DATA_COMPABILITY_VERSION = "0.0.1-alpha1"
+from unical.utils.utils import VersionNumber
+
+APP_VERSION = VersionNumber("2.0.0-beta1+20221110")
+DATA_COMPATIBILITY_VERSION = VersionNumber("0.0.1-alpha1")
 
 SUPPORTED_SCHOOL = [
     "默认",
