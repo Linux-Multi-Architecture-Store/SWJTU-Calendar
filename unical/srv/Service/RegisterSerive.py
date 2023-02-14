@@ -10,5 +10,19 @@ class RegisterService(object):
     def on_get(self, req, res):
         """Handles GET requests"""
         result = asyncio.run(RegistUser(req.params['username'], req.params['password'], self.logger))
-        res.status = falcon.HTTP_200
-        res.text = result
+        
+        if result:
+            res.status = falcon.HTTP_200
+            res.text = json.dumps({
+                'code': 200,
+                'status': "success",
+                'message': "Successfully registered."
+            })
+            return
+        else:
+            res.status = falcon.HTTP_200
+            res.text = json.dumps({
+                'code': 200,
+                'status': "failure",
+                'message': "Account already registered."
+            })

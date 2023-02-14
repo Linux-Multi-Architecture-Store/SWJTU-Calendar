@@ -48,11 +48,16 @@ def init_table(conn: Connection):
 
     return True
 
-def insert_table(conn, sql):
+def execute_sqls(conn: Connection, sql: list = None):
     conn.execute("PRAGMA foreign_keys = false;")
-    conn.execute(sql)
+    for each in sql:    
+        conn.execute(each)
     conn.execute("PRAGMA foreign_keys = true;")
     conn.commit()
-    conb.close()
+    conn.close()
 
     return True
+
+def execute_query(conn: Connection, query):
+    temp = conn.execute(query)
+    return temp.fetchall()
