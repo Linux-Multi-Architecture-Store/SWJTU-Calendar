@@ -1,6 +1,6 @@
-from .utils import ClassTableHTML, ClassTableInfo, ClassInfo
-from .utils.base import ClassIcs
-from .utils.saveclasstable import save_given_week_table_html
+from .main import ClassTableHTML, ClassTableInfo, ClassInfo
+from .main.base import ClassIcs
+from .main.utils.saveclasstable import save_given_week_table_html
 import tempfile
 
 # Here, HTML files will be stored in system temporary directory.
