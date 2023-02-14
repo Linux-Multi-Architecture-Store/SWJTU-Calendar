@@ -20,3 +20,5 @@ class Database:
     def initialize_database(self):
         conn = sqlite3.connect(self.db_path)
         dbu.init_table(conn)
+
+

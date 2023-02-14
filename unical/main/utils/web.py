@@ -15,7 +15,7 @@ def _get_options():
             'handleSIGINT': False,
             'handleSIGTERM': False,
             'handleSIGHUP': False,
-            'headless': False,
+            'headless': True,
             "devtools": False,
             "executablePath": "/usr/bin/x-www-browser",
             "args": [
@@ -28,7 +28,7 @@ def _get_options():
             'handleSIGINT': False,
             'handleSIGTERM': False,
             'handleSIGHUP': False,
-            'headless': False,
+            'headless': True,
             "devtools": False,
             "args": [
                 '--window-size=1280,720'
@@ -62,7 +62,7 @@ async def main(username: str, password: str):
     await page.type("#username", username)
     await page.type("#password", password)
     # await page.type("#ranstring", str(captcha_text))
-    await page.click(".auth_login_btn")
+    await page.click("#login_submit")
 
     await page.waitFor(15 * 1000)
     global cookie
