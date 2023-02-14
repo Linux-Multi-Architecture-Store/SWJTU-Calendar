@@ -1,3 +1,3 @@
-import unical.utils
+import unical.core
 import unical.infos
 from .core import SWJTUCalendar

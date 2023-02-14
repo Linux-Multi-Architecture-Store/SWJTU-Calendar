@@ -1,4 +1,4 @@
-from unical.utils.utils import VersionNumber
+from unical.main.utils.utils import VersionNumber
 
 APP_VERSION = VersionNumber("2.0.0-beta1+20221110")
 DATA_COMPATIBILITY_VERSION = VersionNumber("0.0.1-alpha1")
