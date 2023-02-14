@@ -1,9 +1,11 @@
 import unical.main.utils.web as webtools
 import os
+import asyncio
 
 
 def save_all_table_html(username, password, path):
     cookies = webtools.get_cookie(username, password)
+    cookies = asyncio.run(cookies)
     temp_path = None
     for i in range(1, 26, 1):  # Total 25 weeks.
         tabel = webtools.get_class_table(cookies, i)
@@ -19,6 +21,7 @@ def save_all_table_html(username, password, path):
 
 def save_given_week_table_html(week_num, username, password, path):
     cookies = webtools.get_cookie(username, password)
+    cookies = asyncio.run(cookies)
     temp_path = None
 
     tabel = webtools.get_class_table(cookies, week_num)

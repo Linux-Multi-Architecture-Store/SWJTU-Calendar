@@ -70,8 +70,8 @@ async def main(username: str, password: str):
     await browser.close()
 
 
-def get_cookie(username, password):
-    asyncio.run(main(username=username, password=password))
+async def get_cookie(username, password):
+    await main(username=username, password=password)
     return cookie
 
 

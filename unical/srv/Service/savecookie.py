@@ -1,6 +1,7 @@
 from unical.main.utils.web import get_cookie
 import falcon
 import json
+import asyncio
 
 
 class GetCookie(object):
@@ -12,6 +13,7 @@ class GetCookie(object):
         # print(request.params['name'])
         self.logger.war("This method is unsafe! May cause the leak of your password!")
         cookie = get_cookie(request.params['username'], request.params['password'])
+        cookie = asyncio.run(cookie)
 
         found_JSESSIONID = False
         for each in cookie:

@@ -47,3 +47,12 @@ def init_table(conn: Connection):
     conn.close()
 
     return True
+
+def insert_table(conn, sql):
+    conn.execute("PRAGMA foreign_keys = false;")
+    conn.execute(sql)
+    conn.execute("PRAGMA foreign_keys = true;")
+    conn.commit()
+    conb.close()
+
+    return True
