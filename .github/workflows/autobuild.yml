@@ -18,27 +18,32 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.9", "3.10" ]
+        poetry-version: [ "1.3.1", "1.1.15" ]
+        os: [ ubuntu-18.04, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: Install pyinstaller
-        run: pip3 install pyinstaller
-
-      - name: Build app
-        run: |
-          pyi-makespec -F -w --osx-bundle-identifier "ga.swjtu.calendar"  -n "SWJTU 日历" -i assets/imgs/logo.ico main.py
-          pyinstaller --clean -y "SWJTU 日历.spec"
-        
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: actions/setup-python@v4
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "autobuild"
-          prerelease: false
-          title: "Latest auto Build"
-          files: |
-            **/dist/*.exe
+          python-version: ${{ matrix.python-version }}
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Build project
+        run: poetry build
+
+      # - uses: "marvinpinto/action-automatic-releases@latest"
+        # with:
+          # repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          # automatic_release_tag: "autobuild"
+          # prerelease: false
+          # title: "Latest auto Build"
+          # files: |
+              # **/dist/*.tar.gz
+              # **/dist/*.whl
+
